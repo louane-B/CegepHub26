@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Cegep xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <listeDepartement>
+    <Departement>
+      <No>420-RL</No>
+      <Nom>Techniques de l'informatique</Nom>
+      <Description>Informatique de gestion.  </Description>
+    </Departement>
+    <Departement>
+      <No>410-RL</No>
+      <Nom>Techniques admin</Nom>
+      <Description>Admin de gestion.  </Description>
+    </Departement>
+    <Departement>
+      <No>510-RL</No>
+      <Nom>Techniques loirirs</Nom>
+      <Description>Loirirs </Description>
+    </Departement>
+  </listeDepartement>
+  <Nom>Cégep Rivière-du-Loup</Nom>
+  <Adresse>80 Frontenac</Adresse>
+  <Ville>Rivière-du-Loup</Ville>
+  <Province>Québec</Province>
+  <CodePostal>G5R 5E7</CodePostal>
+  <Telephone>418-862-6903</Telephone>
+  <Courriel>info@cegeprdl.ca</Courriel>
+</Cegep>
