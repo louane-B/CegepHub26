@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controleurs\CegepControleur.cs" />
+    <Compile Include="DAOs\cegepRepository.cs" />
+    <Compile Include="DAOs\Repository.cs" />
     <Compile Include="DTOs\CegepDTO.cs" />
     <Compile Include="DTOs\DepartementDTO.cs" />
     <Compile Include="DTOs\EnseignantDTO.cs" />
