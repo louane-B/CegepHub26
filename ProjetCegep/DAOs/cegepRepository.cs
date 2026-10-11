@@ -240,5 +240,37 @@ namespace ProjetCegep.DAOs
                 FermerCloseConnexion();
             }
         }
+
+        /// <summary>
+        /// Méthode de service permettant de supprimer un cegep.
+        /// </summary>
+        /// <param name="cegepDTO">Le DTO du cegep.</param>
+        public void SupprimerCegep(CegepDTO cegepDTO)
+        {
+            SqlCommand command = new SqlCommand(null, connexion);
+
+            command.CommandText = "DELETE Cegeps WHERE Id = @Id";
+
+            SqlParameter idParam = new SqlParameter("@id", SqlDbType.Int);
+
+            idParam.Value = ObtenirIdCegep(cegepDTO.Nom);
+
+            command.Parameters.Add(idParam);
+
+            try
+            {
+                OuvrirConnexion();
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Erreur lors de la supression d'un cegep...");
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+        }
     }
 }

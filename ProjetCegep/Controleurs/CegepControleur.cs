@@ -56,9 +56,9 @@ namespace ProjetCegep.Controleurs
         #region MethodesCegep
 
         /// <summary>
-        /// 
+        /// Méthode de service permettant d'ajouter un cegep
         /// </summary>
-        /// <param name="cegep"></param>
+        /// <param name="cegep">Le DTO du Cégep</param>
         /// <returns></returns>
         public bool CreerCegep(CegepDTO cegep)
          {
@@ -80,7 +80,7 @@ namespace ProjetCegep.Controleurs
             CegepDTO cegepDTOBD = ObtenirCegep(cegepDTO.Nom);
             Cegep cegepBD = new Cegep(cegepDTOBD.Nom, cegepDTOBD.Adresse, cegepDTOBD.Ville, cegepDTOBD.Province, cegepDTOBD.CodePostal, cegepDTOBD.Telephone, cegepDTOBD.Courriel);
 
-            if (cegepDTO.Nom.Equals(cegepBD.Nom))
+            if (cegepDTO.Nom.Equals("Cégep Rivière-du-Loup"))
                 if (cegepDTO.Adresse != cegepBD.Adresse ||
                     cegepDTO.Ville != cegepBD.Ville ||
                     cegepDTO.Province != cegepBD.Province ||
@@ -95,18 +95,24 @@ namespace ProjetCegep.Controleurs
         }
 
         /// <summary>
-        /// 
+        /// Méthode de service permettant de supprimer un cegep
         /// </summary>
+        /// <param name="cegepDTO">Le DTO du Cegep</param>
         /// <returns></returns>
-      //  public bool SupprimerCegep()
-      //  {
-      //      monCegep = null;
-      //      return monCegep == null;
-      //  }
+        public bool SupprimerCegep(CegepDTO cegepDTO)
+        {
+            if (ObtenirCegep(cegepDTO.Nom) != null)
+            {
+                cegepRepository.Instance.SupprimerCegep(cegepDTO);
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
-        /// 
+        /// Méthode de service permettant d'obtenir un cegep
         /// </summary>
+        /// <param name="nom">Le nom du Cegep</param>
         /// <returns></returns>
         public CegepDTO ObtenirCegep(string nom)
         {
