@@ -125,12 +125,63 @@ namespace ProjetCegep.DAOs
             catch(Exception)
             {
                 Console.WriteLine("Erreur lors de l'obtention d'un cegep par son nom...");
+                return null;
             }
             finally
             {
                 FermerCloseConnexion();
             }
-            return unCegep;
+        }
+
+        /// <summary>
+        /// Méthode de service permettant d'ajouter un cegep.
+        /// </summary>
+        /// <param name="cegepDTO">Le DTO du cegep.</param>
+        public void AjouterCegep(CegepDTO cegepDTO)
+        {
+            SqlCommand command = new SqlCommand(null, connexion);
+
+            command.CommandText = " INSERT INTO Cegeps (Nom, Adresse, Ville, Province, CodePostal, Telephone, Courriel) " +
+                                  " VALUES (@nom, @adresse, @ville, @province, @codePostal, @telephone, @courriel) ";
+
+            SqlParameter nomParam = new SqlParameter("@nom", SqlDbType.VarChar, 50);
+            SqlParameter adresseParam = new SqlParameter("@adresse", SqlDbType.VarChar, 50);
+            SqlParameter villeParam = new SqlParameter("@ville", SqlDbType.VarChar, 50);
+            SqlParameter provinceParam = new SqlParameter("@province", SqlDbType.VarChar, 50);
+            SqlParameter codePostalParam = new SqlParameter("@codePostal", SqlDbType.VarChar, 50);
+            SqlParameter telephoneParam = new SqlParameter("@telephone", SqlDbType.VarChar, 50);
+            SqlParameter courrielParam = new SqlParameter("@courriel", SqlDbType.VarChar, 50);
+
+            nomParam.Value = cegepDTO.Nom;
+            adresseParam.Value = cegepDTO.Adresse;
+            villeParam.Value = cegepDTO.Ville;
+            provinceParam.Value = cegepDTO.Province;
+            codePostalParam.Value = cegepDTO.CodePostal;
+            telephoneParam.Value = cegepDTO.Telephone;
+            courrielParam.Value = cegepDTO.Courriel;
+
+            command.Parameters.Add(nomParam);
+            command.Parameters.Add(adresseParam);
+            command.Parameters.Add(villeParam);
+            command.Parameters.Add(provinceParam);
+            command.Parameters.Add(codePostalParam);
+            command.Parameters.Add(telephoneParam);
+            command.Parameters.Add(courrielParam);
+
+            try
+            {
+                OuvrirConnexion();
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Erreur lors de l'ajout d'un cegep...");
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
         }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         private CegepControleur()
         {
-       //     monCegep = null;
+
         }
 
         #endregion Contructeurs
@@ -60,11 +60,15 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="cegep"></param>
         /// <returns></returns>
-        //public bool CreerCegep(CegepDTO cegep)
-        //  {
-        //    monCegep = new Cegep(cegep.Nom, cegep.Adresse, cegep.Ville, cegep.Province, cegep.CodePostal, cegep.Telephone, cegep.Courriel);
-        //    return monCegep != null;
-        // }
+        public bool CreerCegep(CegepDTO cegep)
+         {
+            if(ObtenirCegep(cegep.Nom) == null)
+            {
+                cegepRepository.Instance.AjouterCegep(cegep);
+                return true;
+            }
+            return false;
+         }
 
         /// <summary>
         /// Métode de service permettant de modifier le Cégep.
@@ -76,7 +80,7 @@ namespace ProjetCegep.Controleurs
             CegepDTO cegepDTOBD = ObtenirCegep(cegepDTO.Nom);
             Cegep cegepBD = new Cegep(cegepDTOBD.Nom, cegepDTOBD.Adresse, cegepDTOBD.Ville, cegepDTOBD.Province, cegepDTOBD.CodePostal, cegepDTOBD.Telephone, cegepDTOBD.Courriel);
 
-            if (cegepDTO.Nom.Equals("Cégep Rivière-du-Loup"))
+            if (cegepDTO.Nom.Equals(cegepBD.Nom))
                 if (cegepDTO.Adresse != cegepBD.Adresse ||
                     cegepDTO.Ville != cegepBD.Ville ||
                     cegepDTO.Province != cegepBD.Province ||
