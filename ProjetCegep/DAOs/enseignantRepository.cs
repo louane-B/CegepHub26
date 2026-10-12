@@ -295,6 +295,43 @@ namespace ProjetCegep.DAOs
             }
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Enseignant.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep.</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
+        /// <param name="enseignantDTO">Le DTO de l'enseignant.</param>
+        public void SupprimerEnseignant(string nomCegep, string nomDepartement, EnseignantDTO enseignantDTO)
+        {
+            SqlCommand command = new SqlCommand(null, connexion);
+
+            command.CommandText = "DELETE Enseignants WHERE Id = @id AND IdDepartement = @idDepartement";
+
+            SqlParameter idEnseignantParam = new SqlParameter("@id", SqlDbType.Int);
+            SqlParameter idDepartementParam = new SqlParameter("@idCegep", SqlDbType.Int);
+
+            idEnseignantParam.Value = ObtenirIdEnseignant(nomCegep, nomDepartement, enseignantDTO.NoEmploye);
+            idDepartementParam.Value = departementRepository.Instance.ObtenirIdDepartement(nomCegep, nomDepartement);
+
+            command.Parameters.Add(idEnseignantParam);
+            command.Parameters.Add(idDepartementParam);
+
+            try
+            {
+                OuvrirConnexion();
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Erreur lors de la supression d'un departement...");
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+        }
+
         #endregion MethodesService
     }
 }
