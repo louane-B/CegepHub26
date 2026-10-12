@@ -89,7 +89,7 @@ namespace ProjetCegep.DAOs
             return -1;
         }
 
-        public EnseignantDTO ObtenirDepartement(string nomCegep, string nomDepartement, int noEmploye)
+        public EnseignantDTO ObtenirEnseignant(string nomCegep, string nomDepartement, int noEmploye)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
                                                 " FROM Enseignants " +
@@ -126,6 +126,44 @@ namespace ProjetCegep.DAOs
                 FermerCloseConnexion();
             }
             return null;
+        }
+
+        public List<EnseignantDTO> ObtenirListeEnseignant(string nomCegep, string nomDepartement)
+        {
+            SqlCommand command = new SqlCommand(" SELECT * " +
+                                                " FROM Enseignants " +
+                                                " WHERE IdDepartement = @idDepartement ", connexion);
+
+            SqlParameter idDepartementparam = new SqlParameter("@idDepartement", SqlDbType.Int);
+
+            idDepartementparam.Value = departementRepository.Instance.ObtenirIdDepartement(nomCegep, nomDepartement);
+
+            command.Parameters.Add(idDepartementparam);
+
+            List<EnseignantDTO> liste = new List<EnseignantDTO>();
+
+            try
+            {
+                OuvrirConnexion();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    liste.Add(new EnseignantDTO(reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11)));
+
+                }
+                reader.Close();
+                return liste;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+            return liste;
         }
 
         #endregion MethodesService
