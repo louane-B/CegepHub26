@@ -128,15 +128,25 @@ namespace ProjetCegep.Controleurs
         /// 
         /// </summary>
         /// <returns></returns>
-        //public List<DepartementDTO> ObtenirListeDepartement()
-        //{
-            List<DepartementDTO> liste = new List<DepartementDTO>();
-        //   foreach (Departement departement in monCegep.ObtenirListeDepartement())
-        //   {
-        //       liste.Add(new DepartementDTO(departement));
-        //   }
-        //   return liste;
-        //}
+        public List<DepartementDTO> ObtenirListeDepartement(string nomCegep)
+        {
+            CegepDTO leCegepDTO = cegepRepository.Instance.ObtenirCegep(nomCegep);
+            Cegep leCegep = new Cegep(leCegepDTO.Nom, leCegepDTO.Adresse, leCegepDTO.Ville, leCegepDTO.Province, leCegepDTO.CodePostal, leCegepDTO.Telephone, leCegepDTO.Courriel);
+
+            List<DepartementDTO> departementDTOs = departementRepository.Instance.ObtenirListeDepartement(nomCegep);
+            foreach(DepartementDTO departement in departementDTOs)
+            {
+                leCegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
+            }
+
+            List<DepartementDTO> listeRetourDepartementDTO = new List<DepartementDTO>();
+            foreach(var departement in leCegep.ObtenirListeDepartement())
+            {
+                listeRetourDepartementDTO.Add(new DepartementDTO(departement));
+            }
+
+            return listeRetourDepartementDTO;
+        }
 
         /// <summary>
         /// 
