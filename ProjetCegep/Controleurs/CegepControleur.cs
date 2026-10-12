@@ -231,15 +231,24 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-        public List<EnseignantDTO> ObtenirListeEnseignant(DepartementDTO departement)
+        public List<EnseignantDTO> ObtenirListeEnseignant(string nomCegep, string nomDepartement)
         {
-            List<EnseignantDTO> liste = new List<EnseignantDTO>();
-       //     Departement leDepartement = monCegep.ObtenirDepartement(new Departement(unNom:departement.Nom));
-       //     foreach (Enseignant enseignant in leDepartement.ObtenirListeEnseignant())
+            DepartementDTO leDepartementDTO = departementRepository.Instance.ObtenirDepartement(nomCegep, nomDepartement);
+            Departement leDepartement = new Departement(leDepartementDTO.No, leDepartementDTO.Nom, leDepartementDTO.Description);
+
+            List<EnseignantDTO> enseignantDTOs = enseignantRepository.Instance.ObtenirListeEnseignant(nomCegep,nomDepartement);
+            foreach (EnseignantDTO enseignant in enseignantDTOs)
             {
-       //         liste.Add(new EnseignantDTO(enseignant));
+                leDepartement.AjouterEnseignant(new Enseignant(enseignant.NoEmploye, enseignant.Prenom, enseignant.Nom, enseignant.Adresse, enseignant.Ville, enseignant.Province, enseignant.CodePostal, enseignant.Telephone, enseignant.Courriel));
             }
-            return liste;
+
+            List<EnseignantDTO> listeRetourEnseignantDTO = new List<EnseignantDTO>();
+            foreach (var enseignant in leDepartement.ObtenirListeEnseignant())
+            {
+                listeRetourEnseignantDTO.Add(new EnseignantDTO(enseignant));
+            }
+
+            return listeRetourEnseignantDTO;
         }
 
         /// <summary>
@@ -248,10 +257,18 @@ namespace ProjetCegep.Controleurs
         /// <param name="departement"></param>
         /// <param name="enseignant"></param>
         /// <returns></returns>
-       // public EnseignantDTO ObtenirEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
-       // {
-       //     return new EnseignantDTO(monCegep.ObtenirDepartement(new Departement(unNom: departement.Nom)).ObtenirEnseignant(new Enseignant(unNoEmploye:enseignant.NoEmploye)));
-       // }
+        public EnseignantDTO ObtenirEnseignant(string nomCegep, DepartementDTO departement, EnseignantDTO enseignant)
+        {
+            EnseignantDTO enseignantDTO = enseignantRepository.Instance.ObtenirEnseignant(nomCegep, departement.Nom, enseignant.NoEmploye);
+            if (enseignantDTO == null)
+            {
+                return null;
+            }
+
+            Enseignant enseignantModele = new Enseignant(enseignantDTO.NoEmploye, enseignantDTO.Prenom, enseignantDTO.Nom, enseignantDTO.Adresse, enseignantDTO.Ville, enseignantDTO.Province, enseignantDTO.CodePostal, enseignantDTO.Telephone, enseignantDTO.Courriel);
+
+            return new EnseignantDTO(enseignantModele);
+        }
 
         /// <summary>
         /// 
@@ -259,10 +276,21 @@ namespace ProjetCegep.Controleurs
         /// <param name="departement"></param>
         /// <param name="enseignant"></param>
         /// <returns></returns>
-      //  public bool AjouterEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
-      //  {
-      //      return monCegep.ObtenirDepartement(new Departement(unNom: departement.Nom)).AjouterEnseignant(new Enseignant(enseignant.NoEmploye, enseignant.Nom, enseignant.Prenom, enseignant.Adresse, enseignant.Ville, enseignant.Province, enseignant.CodePostal, enseignant.Telephone, enseignant.Courriel));
-      //  }
+        public void AjouterEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
+        {
+            DepartementDTO departementDTO = ObtenirDepartement("Cégep Rivière-du-Loup", departement.Nom);
+            Departement departementModele = new Departement(departementDTO.No, departementDTO.Nom, departementDTO.Description);
+            List<EnseignantDTO> listeEnseignant = enseignantRepository.Instance.ObtenirListeEnseignant("Cégep Rivière-du-Loup", departement.Nom);
+
+            foreach (EnseignantDTO enseignantDTO in listeEnseignant)
+            {
+                departementModele.AjouterEnseignant(new Enseignant(enseignantDTO.NoEmploye, enseignantDTO.Prenom, enseignantDTO.Nom, enseignantDTO.Adresse, enseignantDTO.Ville, enseignantDTO.Province, enseignantDTO.CodePostal, enseignantDTO.Telephone, enseignantDTO.Courriel));
+            }
+
+            departementModele.AjouterEnseignant(new Enseignant(enseignant.NoEmploye, enseignant.Prenom, enseignant.Nom, enseignant.Adresse, enseignant.Ville, enseignant.Province, enseignant.CodePostal, enseignant.Telephone, enseignant.Courriel));
+
+            enseignantRepository.Instance.AjouterEnseignant("Cégep Rivière-du-Loup", departement.Nom, enseignant);
+        }
 
         /// <summary>
         /// 
@@ -270,33 +298,57 @@ namespace ProjetCegep.Controleurs
         /// <param name="departement"></param>
         /// <param name="enseignant"></param>
         /// <returns></returns>
-       // public bool ModifierEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
-       // {
-         //   Enseignant lenseignant = monCegep.ObtenirDepartement(new Departement(unNom: departement.Nom)).ObtenirEnseignant(new Enseignant(unNoEmploye:enseignant.NoEmploye));
-
-       //     lenseignant.Nom = enseignant.Nom;
-       //     lenseignant.Prenom = enseignant.Prenom;
-       //     lenseignant.Adresse = enseignant.Adresse;
-      //      lenseignant.Ville = enseignant.Ville;
-      //      lenseignant.Province = enseignant.Province;
-      //      lenseignant.CodePostal = enseignant.CodePostal;
-      //      lenseignant.Telephone = enseignant.Telephone;
-      //      lenseignant.Courriel = enseignant.Courriel;
-      //      return true;
-      //  }
+        public void ModifierEnseignant(CegepDTO cegepDTO,DepartementDTO departement, EnseignantDTO enseignant)
+        {
+            EnseignantDTO enseignantDTOBD = ObtenirEnseignant(cegepDTO.Nom, departement, enseignant);
+            Enseignant enseignantBD = new Enseignant(enseignantDTOBD.NoEmploye, enseignantDTOBD.Prenom, enseignantDTOBD.Nom, enseignantDTOBD.Adresse, enseignantDTOBD.Ville, enseignantDTOBD.Province, enseignantDTOBD.CodePostal, enseignantDTOBD.Telephone, enseignantDTOBD.Courriel);
+            if (enseignantDTOBD != null)
+            {
+                if (enseignant.NoEmploye.Equals(enseignantBD.NoEmploye))
+                {
+                    if (enseignant.Nom != enseignantBD.Nom ||
+                        enseignant.Prenom != enseignantBD.Prenom ||
+                        enseignant.Adresse != enseignantBD.Adresse ||
+                        enseignant.Ville != enseignantBD.Ville ||
+                        enseignant.Province != enseignantBD.Province ||
+                        enseignant.CodePostal != enseignantBD.CodePostal ||
+                        enseignant.Telephone != enseignantBD.Telephone ||
+                        enseignant.Courriel != enseignantBD.Courriel)
+                    {
+                        enseignantRepository.Instance.ModifierEnseignant(cegepDTO.Nom, departement.Nom, enseignant);
+                    }
+                    else
+                        throw new Exception("Erreur - Veuiller modifier au moins une valeur.");
+                }
+                else
+                    throw new Exception("Erreur - Vous devez utiliser le Cégep Rivière-du-Loup...");
+            }
+        }
 
         /// <summary>
-        /// 
+        /// Méthode de service permettant de supprimer un enseignant
         /// </summary>
-        /// <param name="departement"></param>
-        /// <param name="enseignant"></param>
-        /// <returns></returns>
-        //public bool SupprimerEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
-        //{
-        //    return monCegep.ObtenirDepartement(new Departement(unNom: departement.Nom)).EnleverEnseignant(new Enseignant(enseignant.NoEmploye));
-        //}
+        /// <param name="departement">Le DTO du département de l'enseignant</param>
+        /// <param name="enseignant">Le DTO de l'enseignant a supprimer.</param>
+        public void SupprimerEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
+        {
+            DepartementDTO departementDTO = departementRepository.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", departement.Nom);
+            Departement departementModele = new Departement(departementDTO.No, departementDTO.Nom, departementDTO.Description);
+
+            List<EnseignantDTO> listeEnseignant = enseignantRepository.Instance.ObtenirListeEnseignant("Cégep Rivière-du-Loup", departement.Nom);
+            foreach (EnseignantDTO enseignantItem in listeEnseignant)
+            {
+                departementModele.AjouterEnseignant(new Enseignant(enseignantItem.NoEmploye, enseignantItem.Nom, enseignantItem.Prenom, enseignantItem.Adresse, enseignantItem.Ville, enseignantItem.Province, enseignantItem.CodePostal, enseignantItem.Telephone, enseignantItem.Courriel));
+            }
+
+            if (departementModele.EnleverEnseignant(new Enseignant(unNoEmploye: enseignant.NoEmploye)) == false)
+            {
+                throw new Exception("Erreur - Le département n'existe pas dans ce cégep.");
+            }
+            enseignantRepository.Instance.SupprimerEnseignant("Cégep Rivière-du-Loup", departement.Nom, enseignant);
+        }
 
         #endregion MethodesEnseignant
-        
-    }
+
+}
 }
