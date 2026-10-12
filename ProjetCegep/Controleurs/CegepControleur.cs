@@ -153,10 +153,18 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-        //public DepartementDTO ObtenirDepartement(DepartementDTO departement)
-        //{
-        //   return new DepartementDTO(monCegep.ObtenirDepartement(new Departement(departement.No, departement.Nom, departement.Description)));
-        //}
+        public DepartementDTO ObtenirDepartement(string nomCegep, string nomDepartement)
+        {
+            DepartementDTO dto = departementRepository.Instance.ObtenirDepartement(nomCegep, nomDepartement);
+            if(dto == null)
+            {
+                return null;
+            }
+
+            Departement departement = new Departement(dto.No, dto.Nom, dto.Description);
+
+            return new DepartementDTO(departement);
+        }
 
         /// <summary>
         /// 

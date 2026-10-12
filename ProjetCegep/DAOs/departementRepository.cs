@@ -49,6 +49,84 @@ namespace ProjetCegep.DAOs
 
         #region MethodesService
 
+        public int ObtenirIdDepartement(string nomCegep, string nomDepartement)
+        {
+            SqlCommand command = new SqlCommand(" SELECT Id" +
+                                                " FROM Departements" +
+                                                " WHERE IdCegep = @idCegep " +
+                                                "    AND Nom = @nom ", connexion);
+
+            SqlParameter cegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
+            SqlParameter nomDepartementParam = new SqlParameter("@nom", SqlDbType.VarChar, 50);
+
+            cegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
+            nomDepartementParam.Value = nomDepartement;
+
+            command.Parameters.Add(cegepParam);
+            command.Parameters.Add(nomDepartementParam);
+
+            int id;
+
+            try
+            {
+                OuvrirConnexion();
+                SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                id = reader.GetInt32(0);
+                reader.Close();
+                return id;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+            return -1;
+        }
+
+        public DepartementDTO ObtenirDepartement(string nomCegep, string nomDepartement)
+        {
+            SqlCommand command = new SqlCommand(" SELECT * " +
+                                                " FROM Departements " +
+                                                " WHERE IdCegep = @idCegep " +
+                                                "    AND Nom = @nom ", connexion);
+
+            SqlParameter cegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
+            SqlParameter nomDepartementParam = new SqlParameter("@nom", SqlDbType.VarChar, 50);
+
+            cegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
+            nomDepartementParam.Value = nomDepartement;
+
+            command.Parameters.Add(cegepParam);
+            command.Parameters.Add(nomDepartementParam);
+
+            DepartementDTO unDepartement = new DepartementDTO();
+
+            try
+            {
+                OuvrirConnexion();
+                SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                unDepartement = new DepartementDTO(reader.GetString(1), reader.GetString(2), reader.GetString(3));
+                reader.Close();
+                return unDepartement;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+            return null;
+        }
+
         public List<DepartementDTO> ObtenirListeDepartement(string nomCegep)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
