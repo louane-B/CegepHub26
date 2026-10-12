@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Xml.Serialization;
 using ProjetCegep.Modeles;
 using ProjetCegep.DTOs;
 using System.Collections.Generic;
@@ -192,10 +191,24 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-       // public bool SupprimerDepartement(DepartementDTO departement)
-       // {
-        //    return monCegep.EnleverDepartement(new Departement(unNom: departement.Nom));
-       // }
+        public bool SupprimerDepartement(CegepDTO cegep,DepartementDTO departement)
+        {
+            CegepDTO cegepDTO = cegepRepository.Instance.ObtenirCegep(cegep.Nom);
+            Cegep cegepModele = new Cegep(cegepDTO.Nom, cegepDTO.Adresse, cegepDTO.Ville, cegepDTO.Province, cegepDTO.CodePostal, cegepDTO.Telephone, cegepDTO.Courriel);
+
+            List<DepartementDTO> listeDepartement = departementRepository.Instance.ObtenirListeDepartement(cegep.Nom);
+            foreach(DepartementDTO departementItem in listeDepartement)
+            {
+                cegepModele.AjouterDepartement(new Departement(departementItem.No, departementItem.Nom, departementItem.Description));
+            }
+
+            if(cegepModele.EnleverDepartement(new Departement(departement.No, departement.Nom, departement.Description)) == true)
+            {
+                departementRepository.Instance.SupprimerDepartement(cegepDTO.Nom, departement);
+                return true;
+            }
+            return false;
+        }
 
         #endregion MethodesDepartement
 

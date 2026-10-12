@@ -204,6 +204,88 @@ namespace ProjetCegep.DAOs
             }
         }
 
+        /// <summary>
+        /// Méthode de service permettant de modifier un cegep.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep</param>
+        /// <param name="departementDTO">Le DTO du departement.</param>
+        public void ModifierDepartement(string nomCegep, DepartementDTO departementDTO)
+        {
+            SqlCommand command = new SqlCommand(null, connexion);
+
+            command.CommandText = " UPDATE Departements " +
+                                  "   SET No = @no " +
+                                  "       Description = @description " +
+                                  "   WHERE Nom = @nom " +
+                                  "      AND IdCegep = @idCegep ";
+
+            SqlParameter nomDepartementParam = new SqlParameter("@nom", SqlDbType.VarChar, 50);
+            SqlParameter noDepartementParam = new SqlParameter("@no", SqlDbType.VarChar, 50);
+            SqlParameter descriptionDepartementParam = new SqlParameter("@description", SqlDbType.VarChar, 50);
+            SqlParameter cegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
+            
+            nomDepartementParam.Value = departementDTO.Nom;
+            noDepartementParam.Value = departementDTO.No;
+            descriptionDepartementParam.Value = departementDTO.Description;
+            cegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
+            
+
+            command.Parameters.Add(nomDepartementParam);
+            command.Parameters.Add(noDepartementParam);
+            command.Parameters.Add(descriptionDepartementParam);
+            command.Parameters.Add(cegepParam);
+
+            try
+            {
+                OuvrirConnexion();
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Erreur lors de la modification du departement...");
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+        }
+
+        /// <summary>
+        /// Méthode de service permettant de supprimer un cegep.
+        /// </summary>
+        /// <param name="cegepDTO">Le DTO du cegep.</param>
+        public void SupprimerDepartement(string nomCegep,DepartementDTO departementDTO)
+        {
+            SqlCommand command = new SqlCommand(null, connexion);
+
+            command.CommandText = "DELETE Departements WHERE Id = @id AND IdCegep = @idCegep";
+
+            SqlParameter idDepartementParam = new SqlParameter("@id", SqlDbType.Int);
+            SqlParameter idCegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
+
+            idDepartementParam.Value = ObtenirIdDepartement(nomCegep,departementDTO.Nom);
+            idCegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
+
+            command.Parameters.Add(idDepartementParam);
+            command.Parameters.Add(idCegepParam);
+
+            try
+            {
+                OuvrirConnexion();
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Erreur lors de la supression d'un departement...");
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+        }
+
         #endregion MethodesService
     }
 }
