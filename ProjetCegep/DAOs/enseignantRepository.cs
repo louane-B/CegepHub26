@@ -49,6 +49,12 @@ namespace ProjetCegep.DAOs
 
         #region MethodesService
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Enseignant.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep.</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
+        /// <param name="noEmploye">Le noEmploye de l'enseignant.</param>
         public int ObtenirIdEnseignant(string nomCegep, string nomDepartement, int noEmploye )
         {
             SqlCommand command = new SqlCommand(" SELECT Id" +
@@ -89,6 +95,12 @@ namespace ProjetCegep.DAOs
             return -1;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Enseignant.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep.</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
+        /// <param name="noEmploye">Le noEmploye de l'enseignant.</param>
         public EnseignantDTO ObtenirEnseignant(string nomCegep, string nomDepartement, int noEmploye)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
@@ -128,6 +140,11 @@ namespace ProjetCegep.DAOs
             return null;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Enseignant.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep.</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
         public List<EnseignantDTO> ObtenirListeEnseignant(string nomCegep, string nomDepartement)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
@@ -166,6 +183,12 @@ namespace ProjetCegep.DAOs
             return liste;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de ajouter un Enseignant.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du Cegep.</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
+        /// <param name="enseignantDTO">Le DTO de l'enseignant.</param>
         public void AjouterEnseignant(string nomCegep, string nomDepartement, EnseignantDTO enseignantDTO)
         {
             SqlCommand command = new SqlCommand(null, connexion);

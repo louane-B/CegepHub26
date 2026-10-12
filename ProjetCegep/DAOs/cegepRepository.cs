@@ -53,7 +53,6 @@ namespace ProjetCegep.DAOs
         /// Méthode de service permettant d'obtenir le ID d'un Cegep selon ses informatiques uniques.
         /// </summary>
         /// <param name="Nom">Le nom du Cegep.</param>
-        /// <param name="CodePostal">Le code Postal du Cegep.</param>
         /// <returns>Le ID du Cegep.</returns>
         public int ObtenirIdCegep(string nom)
         {
