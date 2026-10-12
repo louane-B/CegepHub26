@@ -131,11 +131,11 @@ namespace ProjetCegep.Controleurs
         //public List<DepartementDTO> ObtenirListeDepartement()
         //{
             List<DepartementDTO> liste = new List<DepartementDTO>();
-         //   foreach (Departement departement in monCegep.ObtenirListeDepartement())
-         //   {
-         //       liste.Add(new DepartementDTO(departement));
-         //   }
-         //   return liste;
+        //   foreach (Departement departement in monCegep.ObtenirListeDepartement())
+        //   {
+        //       liste.Add(new DepartementDTO(departement));
+        //   }
+        //   return liste;
         //}
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace ProjetCegep.Controleurs
         /// <returns></returns>
         //public DepartementDTO ObtenirDepartement(DepartementDTO departement)
         //{
-         //   return new DepartementDTO(monCegep.ObtenirDepartement(new Departement(departement.No, departement.Nom, departement.Description)));
+        //   return new DepartementDTO(monCegep.ObtenirDepartement(new Departement(departement.No, departement.Nom, departement.Description)));
         //}
 
         /// <summary>
@@ -153,10 +153,21 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-        //public bool AjouterDepartement(DepartementDTO departement)
-       // {
-        //    return monCegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
-       // }
+        public void AjouterDepartement(DepartementDTO departement, string nom)
+        { 
+            CegepDTO cegepDTO = ObtenirCegep("Cégep Rivière-du-Loup");
+            Cegep cegep = new Cegep(cegepDTO.Nom, cegepDTO.Adresse, cegepDTO.Ville, cegepDTO.Province, cegepDTO.CodePostal, cegepDTO.Telephone, cegepDTO.Courriel);
+            List<DepartementDTO> listeDepartement = departementRepository.Instance.ObtenirListeDepartement("Cégep Rivière-du-Loup");
+
+            foreach (DepartementDTO departementDTO in listeDepartement)
+            {
+                cegep.AjouterDepartement(new Departement(departementDTO.No, departementDTO.Nom, departementDTO.Description));
+            }
+
+            cegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
+
+            departementRepository.Instance.AjouterDepartement("Cégep Rivière-du-Loup", departement);
+        }
 
         /// <summary>
         /// 
