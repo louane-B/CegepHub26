@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjetCegep.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -53,21 +54,17 @@ namespace ProjetCegep.DAOs
             SqlCommand command = new SqlCommand(" SELECT Id" +
                                                 " FROM Enseignants" +
                                                 " WHERE IdDepartement = @idDepartement " +
-                                                "    AND NoEmploye = @noEmploye " +
-                                                "    AND IdCegep = @idCegep ", connexion);
+                                                "    AND NoEmploye = @noEmploye ", connexion);
 
             SqlParameter idDepartementParam = new SqlParameter("@idDepartement", SqlDbType.Int);
             SqlParameter noEmployeParam = new SqlParameter("@noEmploye", SqlDbType.Int);
-            SqlParameter cegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
 
             idDepartementParam.Value = departementRepository.Instance.ObtenirIdDepartement(nomCegep, nomDepartement);
             noEmployeParam.Value = noEmploye;
-            cegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
             
 
             command.Parameters.Add(idDepartementParam);
             command.Parameters.Add(noEmployeParam);
-            command.Parameters.Add(cegepParam);
 
             int id;
 
@@ -92,6 +89,44 @@ namespace ProjetCegep.DAOs
             return -1;
         }
 
+        public EnseignantDTO ObtenirDepartement(string nomCegep, string nomDepartement, int noEmploye)
+        {
+            SqlCommand command = new SqlCommand(" SELECT * " +
+                                                " FROM Enseignants " +
+                                                " WHERE IdDepartement = @idDepartement " +
+                                                "    AND NoEmploye = @noEmploye ", connexion);
+
+            SqlParameter idDepartementParam = new SqlParameter("@idDepartement", SqlDbType.Int);
+            SqlParameter noEmployeParam = new SqlParameter("@noEmploye", SqlDbType.Int);
+
+            idDepartementParam.Value = departementRepository.Instance.ObtenirIdDepartement(nomCegep, nomDepartement);
+            noEmployeParam.Value = noEmploye;
+
+            command.Parameters.Add(idDepartementParam);
+            command.Parameters.Add(noEmployeParam);
+
+            EnseignantDTO unEnseignant = new EnseignantDTO();
+
+            try
+            {
+                OuvrirConnexion();
+                SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                unEnseignant = new EnseignantDTO(reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11));
+                reader.Close();
+                return unEnseignant;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
+            }
+            finally
+            {
+                FermerCloseConnexion();
+            }
+            return null;
+        }
 
         #endregion MethodesService
     }
