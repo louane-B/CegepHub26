@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Xml.Serialization;
 using ProjetCegep.Modeles;
 using ProjetCegep.DTOs;
 using System.Collections.Generic;
@@ -128,45 +127,88 @@ namespace ProjetCegep.Controleurs
         /// 
         /// </summary>
         /// <returns></returns>
-        //public List<DepartementDTO> ObtenirListeDepartement()
-        //{
-            List<DepartementDTO> liste = new List<DepartementDTO>();
-         //   foreach (Departement departement in monCegep.ObtenirListeDepartement())
-         //   {
-         //       liste.Add(new DepartementDTO(departement));
-         //   }
-         //   return liste;
-        //}
+        public List<DepartementDTO> ObtenirListeDepartement(string nomCegep)
+        {
+            CegepDTO leCegepDTO = cegepRepository.Instance.ObtenirCegep(nomCegep);
+            Cegep leCegep = new Cegep(leCegepDTO.Nom, leCegepDTO.Adresse, leCegepDTO.Ville, leCegepDTO.Province, leCegepDTO.CodePostal, leCegepDTO.Telephone, leCegepDTO.Courriel);
+
+            List<DepartementDTO> departementDTOs = departementRepository.Instance.ObtenirListeDepartement(nomCegep);
+            foreach(DepartementDTO departement in departementDTOs)
+            {
+                leCegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
+            }
+
+            List<DepartementDTO> listeRetourDepartementDTO = new List<DepartementDTO>();
+            foreach(var departement in leCegep.ObtenirListeDepartement())
+            {
+                listeRetourDepartementDTO.Add(new DepartementDTO(departement));
+            }
+
+            return listeRetourDepartementDTO;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-        //public DepartementDTO ObtenirDepartement(DepartementDTO departement)
-        //{
-         //   return new DepartementDTO(monCegep.ObtenirDepartement(new Departement(departement.No, departement.Nom, departement.Description)));
-        //}
+        public DepartementDTO ObtenirDepartement(string nomCegep, string nomDepartement)
+        {
+            DepartementDTO dto = departementRepository.Instance.ObtenirDepartement(nomCegep, nomDepartement);
+            if(dto == null)
+            {
+                return null;
+            }
+
+            Departement departement = new Departement(dto.No, dto.Nom, dto.Description);
+
+            return new DepartementDTO(departement);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-        //public bool AjouterDepartement(DepartementDTO departement)
-       // {
-        //    return monCegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
-       // }
+        public void AjouterDepartement(DepartementDTO departement, string nom)
+        { 
+            CegepDTO cegepDTO = ObtenirCegep("Cégep Rivière-du-Loup");
+            Cegep cegep = new Cegep(cegepDTO.Nom, cegepDTO.Adresse, cegepDTO.Ville, cegepDTO.Province, cegepDTO.CodePostal, cegepDTO.Telephone, cegepDTO.Courriel);
+            List<DepartementDTO> listeDepartement = departementRepository.Instance.ObtenirListeDepartement("Cégep Rivière-du-Loup");
+
+            foreach (DepartementDTO departementDTO in listeDepartement)
+            {
+                cegep.AjouterDepartement(new Departement(departementDTO.No, departementDTO.Nom, departementDTO.Description));
+            }
+
+            cegep.AjouterDepartement(new Departement(departement.No, departement.Nom, departement.Description));
+
+            departementRepository.Instance.AjouterDepartement("Cégep Rivière-du-Loup", departement);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="departement"></param>
         /// <returns></returns>
-       // public bool SupprimerDepartement(DepartementDTO departement)
-       // {
-        //    return monCegep.EnleverDepartement(new Departement(unNom: departement.Nom));
-       // }
+        public bool SupprimerDepartement(CegepDTO cegep,DepartementDTO departement)
+        {
+            CegepDTO cegepDTO = cegepRepository.Instance.ObtenirCegep(cegep.Nom);
+            Cegep cegepModele = new Cegep(cegepDTO.Nom, cegepDTO.Adresse, cegepDTO.Ville, cegepDTO.Province, cegepDTO.CodePostal, cegepDTO.Telephone, cegepDTO.Courriel);
+
+            List<DepartementDTO> listeDepartement = departementRepository.Instance.ObtenirListeDepartement(cegep.Nom);
+            foreach(DepartementDTO departementItem in listeDepartement)
+            {
+                cegepModele.AjouterDepartement(new Departement(departementItem.No, departementItem.Nom, departementItem.Description));
+            }
+
+            if(cegepModele.EnleverDepartement(new Departement(departement.No, departement.Nom, departement.Description)) == true)
+            {
+                departementRepository.Instance.SupprimerDepartement(cegepDTO.Nom, departement);
+                return true;
+            }
+            return false;
+        }
 
         #endregion MethodesDepartement
 
