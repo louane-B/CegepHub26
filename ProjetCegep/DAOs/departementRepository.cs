@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjetCegep.DAOs
 {
@@ -49,6 +46,11 @@ namespace ProjetCegep.DAOs
 
         #region MethodesService
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Departement.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du cegep</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
         public int ObtenirIdDepartement(string nomCegep, string nomDepartement)
         {
             SqlCommand command = new SqlCommand(" SELECT Id" +
@@ -88,6 +90,11 @@ namespace ProjetCegep.DAOs
             return -1;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Departement.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du cegep</param>
+        /// <param name="nomDepartement">Le nom du departement.</param>
         public DepartementDTO ObtenirDepartement(string nomCegep, string nomDepartement)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
@@ -127,6 +134,10 @@ namespace ProjetCegep.DAOs
             return null;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Departement.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du cegep</param>
         public List<DepartementDTO> ObtenirListeDepartement(string nomCegep)
         {
             SqlCommand command = new SqlCommand(" SELECT * " +
@@ -165,6 +176,11 @@ namespace ProjetCegep.DAOs
             return liste;
         }
 
+        /// <summary>
+        /// Méthode de service permettant de supprimer un Departement.
+        /// </summary>
+        /// <param name="nomCegep">Le nom du cegep</param>
+        /// <param name="departementDTO">Le DTO du departement.</param>
         public void AjouterDepartement(string nomCegep, DepartementDTO departementDTO)
         {
             SqlCommand command = new SqlCommand(null, connexion);
@@ -252,9 +268,10 @@ namespace ProjetCegep.DAOs
         }
 
         /// <summary>
-        /// Méthode de service permettant de supprimer un cegep.
+        /// Méthode de service permettant de supprimer un Departement.
         /// </summary>
-        /// <param name="cegepDTO">Le DTO du cegep.</param>
+        /// <param name="nomCegep">Le nom du cegep</param>
+        /// <param name="departementDTO">Le DTO du departement.</param>
         public void SupprimerDepartement(string nomCegep,DepartementDTO departementDTO)
         {
             SqlCommand command = new SqlCommand(null, connexion);

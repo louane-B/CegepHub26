@@ -224,8 +224,15 @@ namespace ProjetCegep.Vues
         /// <param name="e"></param>
         private void BtnModifierCegep_Click(object sender, EventArgs e)
         {
-            if (CegepControleur.Instance.ModifierCegep(new CegepDTO(edtNomCegep.Text, edtAdresseCegep.Text, edtVilleCegep.Text, edtProvinceCegep.Text, edtCodePostalCegep.Text, edtTelephoneCegep.Text, edtCourrielCegep.Text)))
+            try
+            {
+                CegepControleur.Instance.ModifierCegep(new CegepDTO(edtNomCegep.Text, edtAdresseCegep.Text, edtVilleCegep.Text, edtProvinceCegep.Text, edtCodePostalCegep.Text, edtTelephoneCegep.Text, edtCourrielCegep.Text)))
                 MessageBox.Show(edtNomCegep.Text + "\n a bien été modifié.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
