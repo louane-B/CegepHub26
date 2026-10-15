@@ -330,7 +330,7 @@ namespace ProjetCegep.Controleurs
         /// </summary>
         /// <param name="departement">Le DTO du département de l'enseignant</param>
         /// <param name="enseignant">Le DTO de l'enseignant a supprimer.</param>
-        public void SupprimerEnseignant(DepartementDTO departement, EnseignantDTO enseignant)
+        public void SupprimerEnseignant(CegepDTO cegepDTO, DepartementDTO departement, EnseignantDTO enseignant)
         {
             DepartementDTO departementDTO = departementRepository.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", departement.Nom);
             Departement departementModele = new Departement(departementDTO.No, departementDTO.Nom, departementDTO.Description);
@@ -338,12 +338,12 @@ namespace ProjetCegep.Controleurs
             List<EnseignantDTO> listeEnseignant = enseignantRepository.Instance.ObtenirListeEnseignant("Cégep Rivière-du-Loup", departement.Nom);
             foreach (EnseignantDTO enseignantItem in listeEnseignant)
             {
-                departementModele.AjouterEnseignant(new Enseignant(enseignantItem.NoEmploye, enseignantItem.Nom, enseignantItem.Prenom, enseignantItem.Adresse, enseignantItem.Ville, enseignantItem.Province, enseignantItem.CodePostal, enseignantItem.Telephone, enseignantItem.Courriel));
+                departementModele.AjouterEnseignant(new Enseignant(enseignantItem.NoEmploye, enseignantItem.Prenom, enseignantItem.Nom, enseignantItem.Adresse, enseignantItem.Ville, enseignantItem.Province, enseignantItem.CodePostal, enseignantItem.Telephone, enseignantItem.Courriel));
             }
 
             if (departementModele.EnleverEnseignant(new Enseignant(unNoEmploye: enseignant.NoEmploye)) == false)
             {
-                throw new Exception("Erreur - Le département n'existe pas dans ce cégep.");
+                throw new Exception("Erreur - L'enseignant n'existe pas dans ce département.");
             }
             enseignantRepository.Instance.SupprimerEnseignant("Cégep Rivière-du-Loup", departement.Nom, enseignant);
         }

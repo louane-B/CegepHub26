@@ -88,17 +88,17 @@ namespace ProjetCegep.Vues
         {
             try
             {
-                string nomDepartement = cbxDepartementEnseignant.Text;
-                if (string.IsNullOrWhiteSpace(nomDepartement))
+                if (cbxDepartementEnseignant.SelectedItem == null)
                     return;
 
-                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", nomDepartement);
+                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", cbxDepartementEnseignant.Text);
 
                 AfficherListeEnseignantGestionEnseignant(monDepartement);
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message,"Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -112,14 +112,13 @@ namespace ProjetCegep.Vues
         {
             try
             {
-                string nomDepartement = cbxDepartementEnseignant.Text;
-                if (string.IsNullOrWhiteSpace(nomDepartement))
+                if (string.IsNullOrWhiteSpace(cbxDepartementEnseignant.Text))
                 {
                     MessageBox.Show("Veuillez sélectionner un département.");
                     return;
                 }
 
-                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", nomDepartement);
+                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", cbxDepartementEnseignant.Text);
 
                 EnseignantDTO enseigantOriginal = CegepControleur.Instance.ObtenirEnseignant("Cégep Rivière-du-Loup", monDepartement, new EnseignantDTO(no: int.Parse(edtNoEmploye.Text)));
 
@@ -147,20 +146,21 @@ namespace ProjetCegep.Vues
         {
             try
             {
-                string nomDepartement = cbxDepartementEnseignant.Text;
-                if (string.IsNullOrWhiteSpace(nomDepartement))
+                if (string.IsNullOrWhiteSpace(cbxDepartementEnseignant.Text))
                 {
                     MessageBox.Show("Veuillez sélectionner un département.");
                     return;
                 }
 
-                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", nomDepartement);
+                DepartementDTO monDepartement = CegepControleur.Instance.ObtenirDepartement("Cégep Rivière-du-Loup", cbxDepartementEnseignant.Text);
 
                 EnseignantDTO enseignantDTO = new EnseignantDTO(no: int.Parse(edtNoEmploye.Text));
 
                 EnseignantDTO enseignantTrouve = CegepControleur.Instance.ObtenirEnseignant("Cégep Rivière-du-Loup", monDepartement, enseignantDTO);
 
-                CegepControleur.Instance.SupprimerEnseignant(monDepartement, enseignantDTO);
+                CegepDTO cegepDTO = CegepControleur.Instance.ObtenirCegep("Cégep Rivière-du-Loup");
+
+                CegepControleur.Instance.SupprimerEnseignant(cegepDTO ,monDepartement, enseignantDTO);
 
                 MessageBox.Show("L'enseignant " + edtNoEmploye.Text + " a été supprimé !!!");
                 AfficherListeEnseignantGestionEnseignant(monDepartement);
