@@ -1,4 +1,5 @@
 ﻿using ProjetCegep.DTOs;
+using ProjetCegep.Modeles;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -97,42 +98,48 @@ namespace ProjetCegep.DAOs
         /// <param name="nomDepartement">Le nom du departement.</param>
         public DepartementDTO ObtenirDepartement(string nomCegep, string nomDepartement)
         {
-            SqlCommand command = new SqlCommand(" SELECT * " +
-                                                " FROM Departements " +
-                                                " WHERE IdCegep = @idCegep " +
-                                                "    AND Nom = @nom ", connexion);
+            SqlCommand command = new SqlCommand(
+                "SELECT No, Nom, Description " +
+                "FROM Departements " +
+                "WHERE IdCegep = @idCegep AND Nom = @nomDepartement",
+                connexion
+            );
 
-            SqlParameter cegepParam = new SqlParameter("@idCegep", SqlDbType.Int);
-            SqlParameter nomDepartementParam = new SqlParameter("@nom", SqlDbType.VarChar, 50);
+            // Obtenir l'ID du cégep
+            int idCegep = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
 
-            cegepParam.Value = cegepRepository.Instance.ObtenirIdCegep(nomCegep);
-            nomDepartementParam.Value = nomDepartement;
+            if (idCegep == 0)
+                throw new Exception("Erreur - Le cégep '" + nomCegep + "' n'existe pas dans la base de données.");
 
-            command.Parameters.Add(cegepParam);
-            command.Parameters.Add(nomDepartementParam);
-
-            DepartementDTO unDepartement = new DepartementDTO();
+            command.Parameters.Add(new SqlParameter("@idCegep", SqlDbType.Int) { Value = idCegep });
+            command.Parameters.Add(new SqlParameter("@nomDepartement", SqlDbType.VarChar, 50) { Value = nomDepartement });
 
             try
             {
                 OuvrirConnexion();
                 SqlDataReader reader = command.ExecuteReader();
-                reader.Read();
-                unDepartement = new DepartementDTO(reader.GetString(1), reader.GetString(2), reader.GetString(3));
+
+                if (!reader.Read())
+                {
+                    reader.Close();
+                    throw new Exception("Erreur - Le département '" + nomDepartement + "' n'existe pas.");
+                }
+
+                // Colonnes correctes : No, Nom, Description
+                string no = reader.GetString(0);
+                string nom = reader.GetString(1);
+                string description = reader.GetString(2);
+
                 reader.Close();
-                return unDepartement;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erreur: " + ex.Message);
-                Console.WriteLine("StackTrace: " + ex.StackTrace);
+
+                return new DepartementDTO(no, nom, description);
             }
             finally
             {
                 FermerCloseConnexion();
             }
-            return null;
         }
+
 
         /// <summary>
         /// Méthode de service permettant de supprimer un Departement.

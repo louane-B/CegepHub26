@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ProjetCegep.DAOs
 {
@@ -165,7 +166,7 @@ namespace ProjetCegep.DAOs
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    liste.Add(new EnseignantDTO(reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11)));
+                    liste.Add(new EnseignantDTO(reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetString(7), reader.GetString(8), reader.GetString(9)));
 
                 }
                 reader.Close();
@@ -193,7 +194,7 @@ namespace ProjetCegep.DAOs
         {
             SqlCommand command = new SqlCommand(null, connexion);
 
-            command.CommandText = " INSERT INTO Enseiqnants (NoEmploye, Nom, Prenom, Adresse, Ville, Province, CodePostal, Telephone, Courriel, IdDepartement) " +
+            command.CommandText = " INSERT INTO Enseignants (NoEmploye, Nom, Prenom, Adresse, Ville, Province, CodePostal, Telephone, Courriel, IdDepartement) " +
                                   " VALUES (@noEmploye, @nom, @prenom, @adresse, @ville, @province, @codePostal, @telephone, @courriel, @idDepartement) ";
 
             SqlParameter noEmployeEnseignantParam = new SqlParameter("@noEmploye", SqlDbType.Int);
@@ -202,8 +203,8 @@ namespace ProjetCegep.DAOs
             SqlParameter adresseEnseignantParam = new SqlParameter("@adresse", SqlDbType.VarChar, 50);
             SqlParameter villeEnseignantParam = new SqlParameter("@ville", SqlDbType.VarChar, 50);
             SqlParameter provinceEnseignantParam = new SqlParameter("@province", SqlDbType.VarChar, 50);
-            SqlParameter codePostalEnseignantParam = new SqlParameter("@codePostal", SqlDbType.VarChar, 50);
-            SqlParameter telephoneEnseignantParam = new SqlParameter("@telephone", SqlDbType.VarChar, 50);
+            SqlParameter codePostalEnseignantParam = new SqlParameter("@codePostal", SqlDbType.VarChar, 6);
+            SqlParameter telephoneEnseignantParam = new SqlParameter("@telephone", SqlDbType.VarChar, 10);
             SqlParameter courrielEnseignantParam = new SqlParameter("@courriel", SqlDbType.VarChar, 50);
             SqlParameter DepartementParam = new SqlParameter("@idDepartement", SqlDbType.Int);
 
@@ -237,8 +238,7 @@ namespace ProjetCegep.DAOs
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erreur: " + ex.Message);
-                Console.WriteLine("StackTrace: " + ex.StackTrace);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
@@ -331,7 +331,7 @@ namespace ProjetCegep.DAOs
             command.CommandText = "DELETE Enseignants WHERE Id = @id AND IdDepartement = @idDepartement";
 
             SqlParameter idEnseignantParam = new SqlParameter("@id", SqlDbType.Int);
-            SqlParameter idDepartementParam = new SqlParameter("@idCegep", SqlDbType.Int);
+            SqlParameter idDepartementParam = new SqlParameter("@idDepartement", SqlDbType.Int);
 
             idEnseignantParam.Value = ObtenirIdEnseignant(nomCegep, nomDepartement, enseignantDTO.NoEmploye);
             idDepartementParam.Value = departementRepository.Instance.ObtenirIdDepartement(nomCegep, nomDepartement);
