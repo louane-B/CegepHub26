@@ -21,7 +21,6 @@ namespace ProjetCegep.Vues
         public FormGestionCegep()
         {
             InitializeComponent();
-            CegepControleur.Instance.ChargerDonneesFichier();
             RemplirListes();
         }
 
@@ -253,16 +252,20 @@ namespace ProjetCegep.Vues
         /// </summary>
         public void RemplirListes()
         {
-            lbxDepartement.Items.Clear();
-            lbxDepartementInfoCegep.Items.Clear();
-            cbxDepartementEnseignant.Items.Clear();
-            if (CegepControleur.Instance.ObtenirCegep() != null)
-                foreach (DepartementDTO departement in CegepControleur.Instance.ObtenirListeDepartement())
-                {
-                    lbxDepartement.Items.Add(departement.Nom);
-                    lbxDepartementInfoCegep.Items.Add(departement.Nom);
-                    cbxDepartementEnseignant.Items.Add(departement.Nom);
-                }
+            lbxDepartement.DataSource = null;
+            lbxDepartementInfoCegep.DataSource = null;
+            cbxDepartementEnseignant.DataSource = null;
+
+            List<DepartementDTO> liste = CegepControleur.Instance.ObtenirListeDepartement();
+
+            lbxDepartement.DataSource = liste;
+            lbxDepartement.DisplayMember = "Nom";
+
+            lbxDepartementInfoCegep.DataSource = liste;
+            lbxDepartementInfoCegep.DisplayMember = "Nom";
+
+            cbxDepartementEnseignant.DataSource = liste;
+            cbxDepartementEnseignant.DisplayMember = "Nom";
         }
 
         /// <summary>
@@ -282,7 +285,6 @@ namespace ProjetCegep.Vues
         /// <param name="e"></param>
         private void QuitterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CegepControleur.Instance.SauvegarderDonneesFichier();
             Application.Exit();
         }
 
